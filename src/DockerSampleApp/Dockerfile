@@ -21,7 +21,7 @@ COPY ["src/DockerSampleApp/DockerSampleApp.csproj", "src/DockerSampleApp/"]
 RUN dotnet restore "./src/DockerSampleApp/DockerSampleApp.csproj"
 COPY . .
 WORKDIR "/src/src/DockerSampleApp"
-RUN dotnet build "./DockerSampleApp.csproj" --no-restore -c ${BuildConfiguration} /p:Version=$GITVERSION /p:FileVersion=$MAJOR_MINOR_PATCH /p:AssemblyVersion=$MAJOR_MINOR_PATCH
+RUN dotnet build "./DockerSampleApp.csproj" --no-restore -c ${BUILD_CONFIGURATION} /p:Version=$GITVERSION /p:FileVersion=$MAJOR_MINOR_PATCH /p:AssemblyVersion=$MAJOR_MINOR_PATCH
 
 
 # This stage is used to publish the service project to be copied to the final stage
