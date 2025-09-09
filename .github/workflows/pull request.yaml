@@ -76,7 +76,7 @@ jobs:
         name: Repository to lowercase
         shell: pwsh
         run: |
-          "::set-output name=repository::$($env:IMAGE_NAME.ToLowerInvariant():$env:$GitVersion_SemVer).ToLowerInvariant()"
+          "::set-output name=repository::$($env:IMAGE_NAME.ToLowerInvariant():$env:GitVersion_SemVer.ToLowerInvariant())"
 
       - name: Build and push Docker image
         id: push
@@ -86,5 +86,5 @@ jobs:
           push: true
           file: src/DockerSampleApp/Dockerfile
           tags: |
-            ghcr.io/${{ steps.lower-repo.outputs.repository }}
+            ghcr.io/${{ steps.lower-repo.outputs.repository }}:latest
           labels: ${{ steps.meta.outputs.labels }}
