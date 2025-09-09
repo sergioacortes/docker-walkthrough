@@ -79,5 +79,6 @@ jobs:
           context: .
           push: true
           file: src/DockerSampleApp/Dockerfile
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: |
+            ${{ env.GitVersion_SemVer }}
           labels: ${{ steps.meta.outputs.labels }}
