@@ -104,5 +104,5 @@ jobs:
       - name: Package and push helm chart
         run: |
           helm package ./.helm/dockerwalkthrough --version ${{ env.GitVersion_MajorMinorPatch }}
-          helm push ./.helm/dockerwalkthrough-${{ env.GitVersion_MajorMinorPatch }}.tgz oci://${{ github.repository }}/charts
+          helm push ./.helm/dockerwalkthrough/dockerwalkthrough-${{ env.GitVersion_MajorMinorPatch }}.tgz oci://${{ github.repository }}/charts
   
