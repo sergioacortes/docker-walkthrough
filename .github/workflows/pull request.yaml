@@ -78,6 +78,6 @@ jobs:
         with:
           context: .
           push: true
-          build-args: -f src/DockerSampleApp/Dockerfile
+          file: src/DockerSampleApp/Dockerfile
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
