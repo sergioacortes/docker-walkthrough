@@ -111,5 +111,5 @@ jobs:
         run: |
           helm registry login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
           helm package ./.helm/dockerwalkthrough --version ${{ steps.lower-semver.outputs.semver }} --destination ./.helm/dockerwalkthrough
-          helm push ./.helm/dockerwalkthrough/dockerwalkthrough-${{ steps.lower-semver.outputs.semver }}.tgz oci://${{ github.repository }}/dockerwalkthrough/charts
+          helm push ./.helm/dockerwalkthrough/dockerwalkthrough-${{ steps.lower-semver.outputs.semver }}.tgz oci://${{ github.repository }}
   
