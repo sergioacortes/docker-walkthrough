@@ -20,6 +20,31 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\pull request.yaml = .github\workflows\pull request.yaml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".helm", ".helm", "{7D7E2207-22C5-4785-A025-58974285AC2C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dockerwalkthrough", "dockerwalkthrough", "{C549D494-F051-4B1A-9CD2-BB2D3D7C2FE2}"
+	ProjectSection(SolutionItems) = preProject
+		.helm\dockerwalkthrough\.helmignore = .helm\dockerwalkthrough\.helmignore
+		.helm\dockerwalkthrough\Chart.yaml = .helm\dockerwalkthrough\Chart.yaml
+		.helm\dockerwalkthrough\values.yaml = .helm\dockerwalkthrough\values.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{FE768329-1B34-4B35-8D04-7D76D90E9E14}"
+	ProjectSection(SolutionItems) = preProject
+		.helm\dockerwalkthrough\templates\deployment.yaml = .helm\dockerwalkthrough\templates\deployment.yaml
+		.helm\dockerwalkthrough\templates\hpa.yaml = .helm\dockerwalkthrough\templates\hpa.yaml
+		.helm\dockerwalkthrough\templates\ingress.yaml = .helm\dockerwalkthrough\templates\ingress.yaml
+		.helm\dockerwalkthrough\templates\NOTES.txt = .helm\dockerwalkthrough\templates\NOTES.txt
+		.helm\dockerwalkthrough\templates\service.yaml = .helm\dockerwalkthrough\templates\service.yaml
+		.helm\dockerwalkthrough\templates\serviceaccount.yaml = .helm\dockerwalkthrough\templates\serviceaccount.yaml
+		.helm\dockerwalkthrough\templates\_helpers.tpl = .helm\dockerwalkthrough\templates\_helpers.tpl
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E74CADF0-CF7D-4B02-B97D-A6E728BCBF29}"
+	ProjectSection(SolutionItems) = preProject
+		.helm\dockerwalkthrough\templates\tests\test-connection.yaml = .helm\dockerwalkthrough\templates\tests\test-connection.yaml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,5 +62,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{AEB6841F-7A38-4822-963D-F3D3967068A2} = {B682E618-5A5A-4611-8075-5D9181D804AA}
 		{BA495187-F4A8-4529-8666-527563E4D163} = {6BD5C282-5194-43F1-A343-6B653A43B124}
+		{C549D494-F051-4B1A-9CD2-BB2D3D7C2FE2} = {7D7E2207-22C5-4785-A025-58974285AC2C}
+		{FE768329-1B34-4B35-8D04-7D76D90E9E14} = {C549D494-F051-4B1A-9CD2-BB2D3D7C2FE2}
+		{E74CADF0-CF7D-4B02-B97D-A6E728BCBF29} = {FE768329-1B34-4B35-8D04-7D76D90E9E14}
 	EndGlobalSection
 EndGlobal
