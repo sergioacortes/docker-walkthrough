@@ -67,29 +67,42 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      # - name: Extract metadata (tags, labels) for Docker
+      #   id: meta
+      #   uses: docker/metadata-action@v5
+      #   with:
+      #     images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
-      - id: lower-repo
-        name: Repository to lowercase
-        shell: pwsh
+      # How to set variables on git actions bash
+      # - name: Set environment variables
+      #   id: set-variables
+      #   run: |
+      #     echo "REPOSITORY=ghcr.io/$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
+      #     echo "VERSION=$(yq -r .version ./charts/sample-app/Chart.yaml)" >> "$GITHUB_OUTPUT"          
+
+      #- id: lower-repo
+      #  name: Repository to lowercase
+      #  shell: pwsh
+      #  run: |
+      #    "::set-output name=repository::$($env:IMAGE_NAME.ToLowerInvariant()):$($env:GitVersion_SemVer.ToLowerInvariant())"
+
+      #- name: Build and push Docker image
+      #  id: push
+      #  uses: docker/build-push-action@v6
+      #  with:
+      #    context: .
+      #    push: true
+      #    file: src/DockerSampleApp/Dockerfile
+      #    build-args: |
+      #      BUILD_CONFIGURATION=${{ env.BUILD_CONFIGURATION }}
+      #      GITVERSION=${{ env.GitVersion_SemVer }}
+      #      MAJOR_MINOR_PATCH=${{ env.GitVersion_MajorMinorPatch }}
+      #    tags: |
+      #      ghcr.io/${{ steps.lower-repo.outputs.repository }}
+      #    labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Package and push helm chart
         run: |
-          "::set-output name=repository::$($env:IMAGE_NAME.ToLowerInvariant()):$($env:GitVersion_SemVer.ToLowerInvariant())"
-
-      - name: Build and push Docker image
-        id: push
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          push: true
-          file: src/DockerSampleApp/Dockerfile
-          build-args: |
-            BUILD_CONFIGURATION=${{ env.BUILD_CONFIGURATION }}
-            GITVERSION=${{ env.GitVersion_SemVer }}
-            MAJOR_MINOR_PATCH=${{ env.GitVersion_MajorMinorPatch }}
-          tags: |
-            ghcr.io/${{ steps.lower-repo.outputs.repository }}
-          labels: ${{ steps.meta.outputs.labels }}
+          helm package ./.helm/dockerwalkthrough --version ${{ env.GitVersion_MajorMinorPatch }}
+          helm push ./.helm/dockerwalkthrough-${{ env.GitVersion_MajorMinorPatch }}.tgz oci://${{ github.repository }}/charts
+  
