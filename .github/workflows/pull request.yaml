@@ -109,7 +109,9 @@ jobs:
 
       - name: Package and push helm chart
         run: |
+          echo ${{ env.REGISTRY }}  
+          echo ${{ github.actor }}
           echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io --username ${{ github.actor }} --password-stdin
           helm package ./.helm/dockerwalkthrough --version ${{ steps.lower-semver.outputs.semver }} --destination ./.helm/dockerwalkthrough
-          helm push ./.helm/dockerwalkthrough/dockerwalkthrough-${{ steps.lower-semver.outputs.semver }}.tgz oci://ghcr.io/sergioacortes/dockerwalkthrough
+          helm push ./.helm/dockerwalkthrough/dockerwalkthrough-${{ steps.lower-semver.outputs.semver }}.tgz oci://${{ env.REGISTRY }}/${{ github.actor }}/dockerwalkthrough
   
