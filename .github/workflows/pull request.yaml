@@ -80,11 +80,17 @@ jobs:
       #     echo "REPOSITORY=ghcr.io/$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
       #     echo "VERSION=$(yq -r .version ./charts/sample-app/Chart.yaml)" >> "$GITHUB_OUTPUT"          
 
+      - id: lower-semver
+        name: lowercase semver
+        shell: pwsh
+        run: |
+          "::set-output name=semver::$($env:GitVersion_SemVer.ToLowerInvariant())"
+
       #- id: lower-repo
       #  name: Repository to lowercase
       #  shell: pwsh
       #  run: |
-      #    "::set-output name=repository::$($env:IMAGE_NAME.ToLowerInvariant()):$($env:GitVersion_SemVer.ToLowerInvariant())"
+      #    "::set-output name=repository::$($env:IMAGE_NAME.ToLowerInvariant()):$($env:semver)"
 
       #- name: Build and push Docker image
       #  id: push
@@ -103,6 +109,6 @@ jobs:
 
       - name: Package and push helm chart
         run: |
-          helm package ./.helm/dockerwalkthrough --version ${{ env.GitVersion_MajorMinorPatch }}
-          helm push ./.helm/dockerwalkthrough/dockerwalkthrough-${{ env.GitVersion_MajorMinorPatch }}.tgz oci://${{ github.repository }}/charts
+          helm package ./.helm/dockerwalkthrough --version ${{ steps.lower-semver.outputs.semver }} --destination ./.helm/dockerwalkthrough
+          helm push ./.helm/dockerwalkthrough/dockerwalkthrough-${{ steps.lower-semver.outputs.semver }}.tgz oci://${{ github.repository }}/charts
   
