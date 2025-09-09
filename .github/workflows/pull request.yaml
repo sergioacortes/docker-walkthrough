@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
-      contents: write
+      contents: read
       packages: write
       attestations: write
     needs: [ setup ]
@@ -109,7 +109,7 @@ jobs:
 
       - name: Package and push helm chart
         run: |
-          helm registry login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+          helm registry login ghcr.io -u ${{ github.actor }} -p ${{ secrets.PAT }}
           helm package ./.helm/dockerwalkthrough --version ${{ steps.lower-semver.outputs.semver }} --destination ./.helm/dockerwalkthrough
           helm push ./.helm/dockerwalkthrough/dockerwalkthrough-${{ steps.lower-semver.outputs.semver }}.tgz oci://${{ env.REGISTRY }}/charts/dockerwalkthrough
   
