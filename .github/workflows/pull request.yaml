@@ -86,11 +86,11 @@ jobs:
         run: |
           "::set-output name=semver::$($env:GitVersion_SemVer.ToLowerInvariant())"
 
-      #- id: lower-repo
-      #  name: Repository to lowercase
-      #  shell: pwsh
-      #  run: |
-      #    "::set-output name=repository::$($env:IMAGE_NAME.ToLowerInvariant()):$($env:semver)"
+      - id: lower-repo
+        name: Repository to lowercase
+        shell: pwsh
+        run: |
+          "::set-output name=repository::$($env:IMAGE_NAME.ToLowerInvariant()):$($env:semver)"
 
       #- name: Build and push Docker image
       #  id: push
@@ -109,7 +109,7 @@ jobs:
 
       - name: Package and push helm chart
         run: |
-          helm registry login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+          
           helm package ./.helm/dockerwalkthrough --version ${{ steps.lower-semver.outputs.semver }} --destination ./.helm/dockerwalkthrough
-          helm push ./.helm/dockerwalkthrough/dockerwalkthrough-${{ steps.lower-semver.outputs.semver }}.tgz oci://${{ github.repository }}
+          helm push ./.helm/dockerwalkthrough/dockerwalkthrough-${{ steps.lower-semver.outputs.semver }}.tgz oci://${{ env.REGISTRY }}/${{ steps.lower-repo.outputs.repository }}/charts
   
