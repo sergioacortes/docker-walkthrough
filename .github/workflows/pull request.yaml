@@ -1,6 +1,7 @@
 name: GitVersion - PR
 
 env:
+  BUILD_CONFIGURATION: Release
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}  
   GITVERSION_VERSION: 6.3.0
@@ -85,6 +86,10 @@ jobs:
           context: .
           push: true
           file: src/DockerSampleApp/Dockerfile
+          build-args: |
+            BUILD_CONFIGURATION=${{ env.BUILD_CONFIGURATION }}
+            GITVERSION=${{ env.GitVersion_SemVer }}
+            MAJOR_MINOR_PATCH=${{ env.GitVersion_MajorMinorPatch }}
           tags: |
             ghcr.io/${{ steps.lower-repo.outputs.repository }}
           labels: ${{ steps.meta.outputs.labels }}

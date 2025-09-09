@@ -10,19 +10,24 @@ EXPOSE 8081
 
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
-ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+
+ARG BUILD_CONFIGURATION=Release
+ARG GITVERSION
+ARG MAJOR_MINOR_PATCH
+
 COPY ["Directory.Build.props", "."]
 COPY ["src/DockerSampleApp/DockerSampleApp.csproj", "src/DockerSampleApp/"]
 RUN dotnet restore "./src/DockerSampleApp/DockerSampleApp.csproj"
 COPY . .
 WORKDIR "/src/src/DockerSampleApp"
-RUN dotnet build "./DockerSampleApp.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "./DockerSampleApp.csproj" --no-restore -c ${BuildConfiguration} /p:Version=$GITVERSION /p:FileVersion=$MAJOR_MINOR_PATCH /p:AssemblyVersion=$MAJOR_MINOR_PATCH
+
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./DockerSampleApp.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./DockerSampleApp.csproj" --no-build -c ${BUILD_CONFIGURATION} -o /app/publish /p:Version=$GITVERSION /p:FileVersion=$MAJOR_MINOR_PATCH /p:AssemblyVersion=$MAJOR_MINOR_PATCH
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
