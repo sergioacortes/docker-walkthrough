@@ -1,0 +1,67 @@
+name: GitVersion - PR
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}  
+  GITVERSION_VERSION: 6.3.0
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]    
+    branches:
+      - main
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      GitVersion_BranchName: ${{ steps.gitversion_step.outputs.GitVersion_BranchName }}
+      GitVersion_SemVer: ${{ steps.gitversion_step.outputs.GitVersion_SemVer }}
+      GitVersion_FullSemVer: ${{ steps.gitversion_step.outputs.GitVersion_FullSemVer }}
+      GitVersion_MajorMinorPatch: ${{ steps.gitversion_step.outputs.GitVersion_MajorMinorPatch }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v4.0.1
+        with:
+          versionSpec: ${{ env.GITVERSION_VERSION }}
+
+      - id: gitversion_step
+        name: Execute GitVersion
+        uses: gittools/actions/gitversion/execute@v4.0.1
+      
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      packages: write
+      attestations: write
+    needs: [ setup ]
+    env:
+      GitVersion_BranchName: ${{ needs.setup.outputs.GitVersion_BranchName }}
+      GitVersion_SemVer: ${{ needs.setup.outputs.GitVersion_SemVer }}
+      GitVersion_FullSemVer: ${{ needs.setup.outputs.GitVersion_FullSemVer }}
+      GitVersion_MajorMinorPatch: ${{ needs.setup.outputs.GitVersion_MajorMinorPatch }}
+    steps: 
+      - name: Use own job variables that maps from setup job  (bash)
+        shell: bash
+        run: |
+          echo "GitVersion BranchName         : $GitVersion_BranchName"
+          echo "GitVersion SemVer             : $GitVersion_SemVer"
+          echo "GitVersion FullSemVer         : $GitVersion_FullSemVer"
+          echo "GitVersion MajorMinorPatch    : $GitVersion_MajorMinorPatch"
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}

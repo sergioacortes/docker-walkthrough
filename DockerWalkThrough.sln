@@ -13,6 +13,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".misc", ".misc", "{9CB8BCF5
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DockerSampleApp", "src\DockerSampleApp\DockerSampleApp.csproj", "{AEB6841F-7A38-4822-963D-F3D3967068A2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{6BD5C282-5194-43F1-A343-6B653A43B124}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{BA495187-F4A8-4529-8666-527563E4D163}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\pull request.yaml = .github\workflows\pull request.yaml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,5 +36,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{AEB6841F-7A38-4822-963D-F3D3967068A2} = {B682E618-5A5A-4611-8075-5D9181D804AA}
+		{BA495187-F4A8-4529-8666-527563E4D163} = {6BD5C282-5194-43F1-A343-6B653A43B124}
 	EndGlobalSection
 EndGlobal
