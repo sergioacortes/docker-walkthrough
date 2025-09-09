@@ -111,5 +111,5 @@ jobs:
         run: |
           
           helm package ./.helm/dockerwalkthrough --version ${{ steps.lower-semver.outputs.semver }} --destination ./.helm/dockerwalkthrough
-          helm push ./.helm/dockerwalkthrough/dockerwalkthrough-${{ steps.lower-semver.outputs.semver }}.tgz oci://${{ env.REGISTRY }}/${{ steps.lower-repo.outputs.repository }}/charts
+          helm push ./.helm/dockerwalkthrough/dockerwalkthrough-${{ steps.lower-semver.outputs.semver }}.tgz oci://${{ env.REGISTRY }}/charts/dockerwalkthrough
   
