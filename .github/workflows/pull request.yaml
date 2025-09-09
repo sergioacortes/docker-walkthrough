@@ -72,11 +72,6 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
-      - id: image_version
-        shell: pwsh
-        run: |
-          "::set-output name=version::$($env:GitVersion_SemVer.ToLowerInvariant())"
-
       - name: Build and push Docker image
         id: push
         uses: docker/build-push-action@v6
@@ -84,6 +79,5 @@ jobs:
           context: .
           push: true
           file: src/DockerSampleApp/Dockerfile
-          tags: |
-            ${{ steps.image_version.outputs.version }}
+          tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
