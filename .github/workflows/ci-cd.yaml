@@ -42,7 +42,24 @@ jobs:
           echo "semver=$(echo ${{ steps.gitversion.outputs.GitVersion_SemVer }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
           echo "full_semver=$(echo ${{ steps.gitversion.outputs.GitVersion_FullSemVer }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
           echo "major_minor_patch=$(echo ${{ steps.gitversion.outputs.GitVersion_MajorMinorPatch }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
-      
+
+      - name: Create tag
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/') && (github.event.head_commit && github.event.head_commit.parents && length(github.event.head_commit.parents) > 1)
+        run: |
+          
+          git tag ${{ steps.variables.outputs.major_minor_patch }}
+          git push origin ${{ steps.variables.outputs.major_minor_patch }}
+        
+          $TAG=$(git ls-remote --tags origin | grep ${{ steps.variables.outputs.major_minor_patch }})
+        
+          if [ -n "$TAG" ]; then
+            echo "Tag created successfully: $TAG"
+          else
+            echo "Tag have not been created"
+            exit 1
+          fi
+          
+                
   docker:
     runs-on: ubuntu-latest
     permissions:
