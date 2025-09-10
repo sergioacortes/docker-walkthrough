@@ -16,6 +16,7 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     outputs:
+      BRANCH_NAME: ${{ steps.variables.outputs.GITHUB_OUTPUT }}
       GitVersion_BranchName: ${{ steps.gitversion.outputs.GitVersion_BranchName }}
       GitVersion_SemVer: ${{ steps.gitversion.outputs.GitVersion_SemVer }}
       GitVersion_FullSemVer: ${{ steps.gitversion.outputs.GitVersion_FullSemVer }}
@@ -36,9 +37,9 @@ jobs:
         uses: gittools/actions/gitversion/execute@v4.0.1
 
       - name: Set an output variable
-        id: set_output
+        id: variables
         run: | 
-          echo "my_output=${{ steps.gitversion.outputs.GitVersion_BranchName }}" >> "$GITHUB_OUTPUT"
+          echo "GITHUB_OUTPUT=${{ steps.gitversion.outputs.GitVersion_BranchName }}" >> "$GITHUB_OUTPUT"
       
   #docker:
   #  runs-on: ubuntu-latest
