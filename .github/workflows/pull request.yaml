@@ -38,7 +38,6 @@ jobs:
       - name: Set environment variables
         id: variables
         run: |
-          echo BRANCH_NAME="${{ steps.gitversion.outputs.GitVersion_BranchName }}" >> "$BRANCH_NAME"
           echo SEMVER="${{ steps.gitversion.outputs.GitVersion_SemVer }}" >> "$SEMVER"
           echo FULLSEMVER="${{ steps.gitversion.outputs.GitVersion_FullSemVer }}" >> "$FULLSEMVER"
           echo MAJORMINORPATCH"${{ steps.gitversion.outputs.GitVersion_MajorMinorPatch }}" >> "$MAJORMINORPATCH"
