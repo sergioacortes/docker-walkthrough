@@ -38,7 +38,7 @@ jobs:
       - name: Set an output variable
         id: set_output
         run: | 
-          echo "my_output=Hello World" >> "$GITHUB_OUTPUT"
+          echo "my_output=${{ steps.gitversion.outputs.GitVersion_SemVer }}" >> "$GITHUB_OUTPUT"
       
   #docker:
   #  runs-on: ubuntu-latest
