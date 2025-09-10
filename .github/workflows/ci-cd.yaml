@@ -44,7 +44,7 @@ jobs:
           echo "major_minor_patch=$(echo ${{ steps.gitversion.outputs.GitVersion_MajorMinorPatch }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
 
       - name: Create tag
-        if: github.event_name == 'push' && (startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/heads/release/')) 
+        if: ${{ github.event_name == 'push' && github.event.pull_request.merged == true && (startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/heads/release/')) }}
         run: |
           
           git tag ${{ steps.variables.outputs.major_minor_patch }}
