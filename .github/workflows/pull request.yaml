@@ -134,13 +134,11 @@ jobs:
 
       - name: Helm package
         run: |
-          helm package ./.helm/dockerwalkthrough --version ${{ env.SEMVER }} --destination ./.helm/dockerwalkthrough
+          helm lint ./.helm/dockerwalkthrough
 
-      - name: Install Cosign
-        uses: sigstore/cosign-installer@v3.2.0
-      
-      - name: Attest helm chart
-        run: cosign attest-blob ./.helm/dockerwalkthrough/dockerwalkthrough-${{ env.SEMVER }}.tgz --type slsa-provenance --predicate predicate.json
+      - name: Helm package
+        run: |
+          helm package ./.helm/dockerwalkthrough --version ${{ env.SEMVER }} --destination ./.helm/dockerwalkthrough
       
       - name: Helm push
         run: |
