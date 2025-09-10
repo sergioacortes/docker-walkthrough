@@ -17,9 +17,9 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       BRANCH_NAME: ${{ steps.variables.outputs.branch_name }}
-      # SEMVER: ${{ steps.variable_semver.outputs.SEMVER }}
-      # FULL_SEMVER: ${{ steps.variable_fullsemver.outputs.FULLSEMVER }}
-      # MAJOR_MINOR_PATCH: ${{ steps.variable_majorminorpatch.outputs.MAJOR_MINOR_PATCH }}
+      SEMVER: ${{ steps.variables.outputs.semver }}
+      FULL_SEMVER: ${{ steps.variables.outputs.full_semver }}
+      MAJOR_MINOR_PATCH: ${{ steps.variables.outputs.major_minor_patch }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -39,30 +39,9 @@ jobs:
         id: variables
         run: | 
           echo "branch_name=${{ steps.gitversion.outputs.GitVersion_BranchName }}" >> $GITHUB_OUTPUT
-        
-      # - name: Set an output variable
-      #   id: set_output
-      #   run: echo "my_output=Hello World" >> "$GITHUB_OUTPUT"
-        
-      # - name: Set an output variable
-      #   id: variable_branch_name
-      #   run: | 
-      #     echo "branch_name=${{ steps.gitversion.outputs.GitVersion_BranchName }}" >> "$BRANCH_NAME"
-
-      #- name: Set an output variable
-      #  id: variable_semver
-      #  run: |
-      #    echo "SEMVER=${{ steps.gitversion.outputs.GitVersion_SemVer }}" >> "$SEMVER"
-      #    
-      #- name: Set an output variable
-      #  id: variable_fullsemver
-      #  run: |
-      #    echo "FULLSEMVER=${{ steps.gitversion.outputs.GitVersion_FullSemVer }}" >> "$FULLSEMVER"
-
-      #- name: Set an output variable
-      #  id: variable_majorminorpatch
-      #  run: |
-      #    echo "MAJORMINORPATCH=${{ steps.gitversion.outputs.GitVersion_MajorMinorPatch }}" >> "$MAJORMINORPATCH"
+          echo "semver=${{ steps.gitversion.outputs.GitVersion_SemVer }}" >> $GITHUB_OUTPUT
+          echo "full_semver=${{ steps.gitversion.outputs.GitVersion_FullSemVer }}" >> $GITHUB_OUTPUT
+          echo "major_minor_patch=${{ steps.gitversion.outputs.GitVersion_MajorMinorPatch }}" >> $GITHUB_OUTPUT
       
   #docker:
   #  runs-on: ubuntu-latest
