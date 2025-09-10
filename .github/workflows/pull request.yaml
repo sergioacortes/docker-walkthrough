@@ -135,8 +135,20 @@ jobs:
       - name: Helm package
         run: |
           helm package ./.helm/dockerwalkthrough --version ${{ env.SEMVER }} --destination ./.helm/dockerwalkthrough
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3.2.0
+      
+      - name: Attest helm chart
+        run: cosign attest-blob ./.helm/dockerwalkthrough/dockerwalkthrough-${{ env.SEMVER }}.tgz --type slsa-provenance --predicate predicate.json
       
       - name: Helm push
         run: |
           helm push ./.helm/dockerwalkthrough/dockerwalkthrough-${{ env.SEMVER }}.tgz oci://${{ env.REGISTRY }}/${{ github.actor }}/charts
-  
+
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ github.actor }}/charts/dockerwalkthrough
+          subject-digest: ${{ steps.build_docker.outputs.digest }}
+          push-to-registry: true
