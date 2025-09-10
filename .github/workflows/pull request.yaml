@@ -82,7 +82,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
       - name: Build and push Docker image
-        id: push
+        id: build_docker
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -95,7 +95,14 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ github.actor }}/docker-walkthrough/client:${{ env.SEMVER }}
           labels: ${{ steps.meta.outputs.labels }}
-   
+
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ github.actor }}/docker-walkthrough/client:${{ env.SEMVER }}
+          subject-digest: ${{ steps.build_docker.outputs.digest }}
+          push-to-registry: true
+
   #helm:
   #  runs-on: ubuntu-latest
   #  permissions:
