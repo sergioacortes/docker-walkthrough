@@ -38,9 +38,9 @@ jobs:
       - name: Set environment variables
         id: variables
         run: |
-          echo SEMVER="${{ steps.gitversion.outputs.GitVersion_SemVer }}" >> "$SEMVER"
-          echo FULLSEMVER="${{ steps.gitversion.outputs.GitVersion_FullSemVer }}" >> "$FULLSEMVER"
-          echo MAJORMINORPATCH"${{ steps.gitversion.outputs.GitVersion_MajorMinorPatch }}" >> "$MAJORMINORPATCH"
+          echo "SEMVER=${{ steps.gitversion.outputs.GitVersion_SemVer }}" >> "$SEMVER"
+          echo "FULLSEMVER=${{ steps.gitversion.outputs.GitVersion_FullSemVer }}" >> "$FULLSEMVER"
+          echo "MAJORMINORPATCH=${{ steps.gitversion.outputs.GitVersion_MajorMinorPatch }}" >> "$MAJORMINORPATCH"
       
   docker:
     runs-on: ubuntu-latest
