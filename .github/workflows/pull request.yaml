@@ -37,12 +37,11 @@ jobs:
       
       - name: Set environment variables
         id: variables
-        shell: bash
         run: |
-          echo "${{ steps.gitversion.outputs.GitVersion_BranchName }}" >> "$BRANCH_NAME"
-          echo "${{ steps.gitversion.outputs.GitVersion_SemVer }}" >> "$SEMVER"
-          echo "${{ steps.gitversion.outputs.GitVersion_FullSemVer }}" >> "$FULLSEMVER"
-          echo "${{ steps.gitversion.outputs.GitVersion_MajorMinorPatch }}" >> "$MAJORMINORPATCH"
+          echo BRANCH_NAME="${{ steps.gitversion.outputs.GitVersion_BranchName }}" >> "$BRANCH_NAME"
+          echo SEMVER="${{ steps.gitversion.outputs.GitVersion_SemVer }}" >> "$SEMVER"
+          echo FULLSEMVER="${{ steps.gitversion.outputs.GitVersion_FullSemVer }}" >> "$FULLSEMVER"
+          echo MAJORMINORPATCH"${{ steps.gitversion.outputs.GitVersion_MajorMinorPatch }}" >> "$MAJORMINORPATCH"
       
   docker:
     runs-on: ubuntu-latest
