@@ -16,7 +16,7 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     outputs:
-      BRANCH_NAME: ${{ steps.set_output.outputs.branch_name }}
+      BRANCH_NAME: ${{ steps.variables.outputs.branch_name }}
       # SEMVER: ${{ steps.variable_semver.outputs.SEMVER }}
       # FULL_SEMVER: ${{ steps.variable_fullsemver.outputs.FULLSEMVER }}
       # MAJOR_MINOR_PATCH: ${{ steps.variable_majorminorpatch.outputs.MAJOR_MINOR_PATCH }}
@@ -35,10 +35,10 @@ jobs:
         id: gitversion
         uses: gittools/actions/gitversion/execute@v4.0.1
 
-      - name: Set an output variable
-        id: set_output
-        run: |
-          run: echo "branch_name=${{ steps.gitversion.outputs.GitVersion_BranchName }}" >> $GITHUB_OUTPUT
+      - name: Set output
+        id: variables
+        run: | 
+          echo "branch_name=${{ steps.gitversion.outputs.GitVersion_BranchName }}" >> $GITHUB_OUTPUT
         
       # - name: Set an output variable
       #   id: set_output
