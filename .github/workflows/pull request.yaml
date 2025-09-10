@@ -99,7 +99,7 @@ jobs:
             GITVERSION=${{ env.SEMVER }}
             MAJOR_MINOR_PATCH=${{ env.MAJOR_MINOR_PATCH }}
           tags: |
-            ghcr.io/$($env:IMAGE_NAME.ToLowerInvariant()):$($env:SEMVER.ToLowerInvariant())
+            ghcr.io/docker-walkthrough/client:${{ env.SEMVER }}
           labels: ${{ steps.meta.outputs.labels }}
    
   #helm:
