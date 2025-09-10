@@ -128,12 +128,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - id: lower-semver
-        name: lowercase semver
-        shell: pwsh
-        run: |
-          "::set-output name=semver::$($env:GitVersion_SemVer.ToLowerInvariant())"
-
       - name: Helm login
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io --username ${{ github.actor }} --password-stdin
