@@ -17,7 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{6BD5
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{BA495187-F4A8-4529-8666-527563E4D163}"
 	ProjectSection(SolutionItems) = preProject
-		.github\workflows\pull request.yaml = .github\workflows\pull request.yaml
+		.github\workflows\ci-cd.yaml = .github\workflows\ci-cd.yaml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".helm", ".helm", "{7D7E2207-22C5-4785-A025-58974285AC2C}"
