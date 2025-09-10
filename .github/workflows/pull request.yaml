@@ -38,7 +38,7 @@ jobs:
       - name: Set an output variable
         id: set_output
         run: |
-          echo "::set-output name=branch_name::${{ steps.gitversion.outputs.GitVersion_BranchName }}"
+          run: echo "branch_name=${{ steps.gitversion.outputs.GitVersion_BranchName }}" >> $GITHUB_OUTPUT
         
       # - name: Set an output variable
       #   id: set_output
