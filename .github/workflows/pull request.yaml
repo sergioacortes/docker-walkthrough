@@ -103,49 +103,46 @@ jobs:
           subject-digest: ${{ steps.build_docker.outputs.digest }}
           push-to-registry: true
 
-  #helm:
-  #  runs-on: ubuntu-latest
-  #  permissions:
-  #    id-token: write
-  #    contents: read
-  #    packages: write
-  #    attestations: write
-  #  needs: [ setup, docker ]
-  #  env:
-  #    GitVersion_BranchName: ${{ needs.setup.outputs.GitVersion_BranchName }}
-  #    GitVersion_SemVer: ${{ needs.setup.outputs.GitVersion_SemVer }}
-  #    GitVersion_FullSemVer: ${{ needs.setup.outputs.GitVersion_FullSemVer }}
-  #    GitVersion_MajorMinorPatch: ${{ needs.setup.outputs.GitVersion_MajorMinorPatch }}
-  #  steps: 
-  #    - name: Display GitVersion variables
-  #      shell: bash
-  #      run: |
-  #        echo "GitVersion BranchName         : $GitVersion_BranchName"
-  #        echo "GitVersion SemVer             : $GitVersion_SemVer"
-  #        echo "GitVersion FullSemVer         : $GitVersion_FullSemVer"
-  #        echo "GitVersion MajorMinorPatch    : $GitVersion_MajorMinorPatch"
+  helm:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      packages: write
+      attestations: write
+    needs: [ setup, docker ]
+    env:
+      BRANCH_NAME: ${{ needs.setup.outputs.BRANCH_NAME }}
+      SEMVER: ${{ needs.setup.outputs.SEMVER }}
+      FULL_SEMVER: ${{ needs.setup.outputs.FULL_SEMVER }}
+      MAJOR_MINOR_PATCH: ${{ needs.setup.outputs.MAJOR_MINOR_PATCH }}
+    steps: 
+      - name: Display GitVersion variables
+        shell: bash
+        run: |
+          echo "GitVersion BranchName         : $BRANCH_NAME"
+          echo "GitVersion SemVer             : $SEMVER"
+          echo "GitVersion FullSemVer         : $FULL_SEMVER"
+          echo "GitVersion MajorMinorPatch    : $MAJOR_MINOR_PATCH"
 
-  #    - name: Checkout repository
-  #      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  #    - name: Log in to the Container registry
-  #      uses: docker/login-action@v3
-  #      with:
-  #        registry: ${{ env.REGISTRY }}
-  #        username: ${{ github.actor }}
-  #        password: ${{ secrets.GITHUB_TOKEN }}
+      - id: lower-semver
+        name: lowercase semver
+        shell: pwsh
+        run: |
+          "::set-output name=semver::$($env:GitVersion_SemVer.ToLowerInvariant())"
 
-  #    - id: lower-semver
-  #      name: lowercase semver
-  #      shell: pwsh
-  #      run: |
-  #        "::set-output name=semver::$($env:GitVersion_SemVer.ToLowerInvariant())"
+      - name: Helm login
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io --username ${{ github.actor }} --password-stdin
 
-  #    - name: Package and push helm chart
-  #      run: |
-  #        echo ${{ env.REGISTRY }}  
-  #        echo ${{ github.actor }}
-  #        echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io --username ${{ github.actor }} --password-stdin
-  #        helm package ./.helm/dockerwalkthrough --version ${{ steps.lower-semver.outputs.semver }} --destination ./.helm/dockerwalkthrough
-  #        helm push ./.helm/dockerwalkthrough/dockerwalkthrough-${{ steps.lower-semver.outputs.semver }}.tgz oci://${{ env.REGISTRY }}/${{ github.actor }}/charts
+      - name: Helm package
+        run: |
+          helm package ./.helm/dockerwalkthrough --version ${{ env.SEMVER }} --destination ./.helm/dockerwalkthrough
+      
+      - name: Helm push
+        run: |
+          helm push ./.helm/dockerwalkthrough/dockerwalkthrough-${{ env.SEMVER }}.tgz oci://${{ env.REGISTRY }}/${{ github.actor }}/charts
   
