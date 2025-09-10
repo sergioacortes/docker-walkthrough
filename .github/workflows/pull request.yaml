@@ -16,7 +16,7 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     outputs:
-      BRANCH_NAME: ${{ steps.variables.outputs.GITHUB_OUTPUT }}
+      BRANCH_NAME: ${{ steps.variables.outputs.BRANCH_NAME }}
       GitVersion_BranchName: ${{ steps.gitversion.outputs.GitVersion_BranchName }}
       GitVersion_SemVer: ${{ steps.gitversion.outputs.GitVersion_SemVer }}
       GitVersion_FullSemVer: ${{ steps.gitversion.outputs.GitVersion_FullSemVer }}
@@ -39,7 +39,7 @@ jobs:
       - name: Set an output variable
         id: variables
         run: | 
-          echo "GITHUB_OUTPUT=${{ steps.gitversion.outputs.GitVersion_BranchName }}" >> "$GITHUB_OUTPUT"
+          echo "BRANCH_NAME=${{ steps.gitversion.outputs.GitVersion_BranchName }}" >> "$BRANCH_NAME"
       
   #docker:
   #  runs-on: ubuntu-latest
