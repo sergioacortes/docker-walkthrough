@@ -17,9 +17,9 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       BRANCH_NAME: ${{ steps.variable_branch_name.outputs.BRANCH_NAME }}
-      SEMVER: ${{ steps.variable_semver.outputs.SEMVER }}
-      FULL_SEMVER: ${{ steps.variable_fullsemver.outputs.FULLSEMVER }}
-      MAJOR_MINOR_PATCH: ${{ steps.variable_majorminorpatch.outputs.MAJOR_MINOR_PATCH }}
+      # SEMVER: ${{ steps.variable_semver.outputs.SEMVER }}
+      # FULL_SEMVER: ${{ steps.variable_fullsemver.outputs.FULLSEMVER }}
+      # MAJOR_MINOR_PATCH: ${{ steps.variable_majorminorpatch.outputs.MAJOR_MINOR_PATCH }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -40,20 +40,20 @@ jobs:
         run: | 
           echo "BRANCH_NAME=${{ steps.gitversion.outputs.GitVersion_BranchName }}" >> "$BRANCH_NAME"
 
-      - name: Set an output variable
-        id: variable_semver
-        run: |
-          echo "SEMVER=${{ steps.gitversion.outputs.GitVersion_SemVer }}" >> "$SEMVER"
-          
-      - name: Set an output variable
-        id: variable_fullsemver
-        run: |
-          echo "FULLSEMVER=${{ steps.gitversion.outputs.GitVersion_FullSemVer }}" >> "$FULLSEMVER"
+      #- name: Set an output variable
+      #  id: variable_semver
+      #  run: |
+      #    echo "SEMVER=${{ steps.gitversion.outputs.GitVersion_SemVer }}" >> "$SEMVER"
+      #    
+      #- name: Set an output variable
+      #  id: variable_fullsemver
+      #  run: |
+      #    echo "FULLSEMVER=${{ steps.gitversion.outputs.GitVersion_FullSemVer }}" >> "$FULLSEMVER"
 
-      - name: Set an output variable
-        id: variable_majorminorpatch
-        run: |
-          echo "MAJORMINORPATCH=${{ steps.gitversion.outputs.GitVersion_MajorMinorPatch }}" >> "$MAJORMINORPATCH"
+      #- name: Set an output variable
+      #  id: variable_majorminorpatch
+      #  run: |
+      #    echo "MAJORMINORPATCH=${{ steps.gitversion.outputs.GitVersion_MajorMinorPatch }}" >> "$MAJORMINORPATCH"
       
   #docker:
   #  runs-on: ubuntu-latest
