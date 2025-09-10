@@ -81,12 +81,6 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
-  #    - id: lower-repo
-  #      name: Repository to lowercase
-  #      shell: pwsh
-  #      run: |
-  #        "::set-output name=repository::$($env:IMAGE_NAME.ToLowerInvariant()):$($env:GitVersion_SemVer.ToLowerInvariant())"
-
       - name: Build and push Docker image
         id: push
         uses: docker/build-push-action@v6
@@ -99,7 +93,7 @@ jobs:
             GITVERSION=${{ env.SEMVER }}
             MAJOR_MINOR_PATCH=${{ env.MAJOR_MINOR_PATCH }}
           tags: |
-            ghcr.io/docker-walkthrough/client:${{ env.SEMVER }}
+            ${{ env.REGISTRY }}/${{ github.actor }}/docker-walkthrough/client:${{ env.SEMVER }}
           labels: ${{ steps.meta.outputs.labels }}
    
   #helm:
