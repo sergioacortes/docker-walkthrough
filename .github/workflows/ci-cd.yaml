@@ -96,10 +96,11 @@ jobs:
         id: docker_tags
         run: |
           
-          TAGS="${{ env.REGISTRY }}/${{ github.actor }}/docker-walkthrough/client:${{ env.SEMVER }}"
+          IMAGE=${{ env.REGISTRY }}/${{ github.actor }}/docker-walkthrough/client
+          TAGS="$IMAGE:${{ env.SEMVER }}"
           
           if [[ "${{ env.MERGE }}" == "true" ]]; then
-            TAGS="$TAGS,$TAGS:latest"
+            TAGS="$TAGS,$IMAGE:latest"
           fi
           
           echo "tags=$TAGS" >> $GITHUB_ENV
@@ -124,7 +125,7 @@ jobs:
           subject-name: ${{ env.REGISTRY }}/${{ github.actor }}/docker-walkthrough/client
           subject-digest: ${{ steps.build_docker.outputs.digest }}
           push-to-registry: false
-          
+         
   helm:
     runs-on: ubuntu-latest
     permissions:
