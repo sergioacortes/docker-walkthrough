@@ -20,6 +20,7 @@ jobs:
       SEMVER: ${{ steps.variables.outputs.semver }}
       FULL_SEMVER: ${{ steps.variables.outputs.full_semver }}
       MAJOR_MINOR_PATCH: ${{ steps.variables.outputs.major_minor_patch }}
+      MERGE: ${{ steps.variables.outputs.merge }}
     permissions:
       contents: write
     steps:
@@ -46,10 +47,6 @@ jobs:
           echo "major_minor_patch=$(echo ${{ steps.gitversion.outputs.GitVersion_MajorMinorPatch }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
           echo "merge=$(echo ${{ (startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/heads/release')) && github.event_name == 'pull_request' && github.event.action == 'closed' }})" >> $GITHUB_OUTPUT
 
-      - name: Print variables
-        run: |
-          echo ${{ steps.variables.outputs.merge }}
-
       - name: Create and push tag
         if: ${{ steps.variables.outputs.merge == 'true' }}
         run: |
@@ -69,6 +66,7 @@ jobs:
       SEMVER: ${{ needs.setup.outputs.SEMVER }}
       FULL_SEMVER: ${{ needs.setup.outputs.FULL_SEMVER }}
       MAJOR_MINOR_PATCH: ${{ needs.setup.outputs.MAJOR_MINOR_PATCH }}
+      MERGE: ${{ needs.setup.outputs.MERGE }}
     steps: 
       - name: Display GitVersion variables
         shell: bash
@@ -93,6 +91,19 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+      - name: Calculate docker tags
+        id: docker_tags
+        run: |
+          
+          TAGS="${{ env.REGISTRY }}/${{ github.actor }}/docker-walkthrough/client:${{ env.SEMVER }}"
+          
+          if [[ "${{ env.MERGE }}" == "true" ]]; then
+            TAGS="$TAGS,$TAGS:latest"
+          fi
+          
+          echo "tags=$TAGS" >> $GITHUB_ENV
+
       - name: Build and push Docker image
         id: build_docker
         uses: docker/build-push-action@v6
@@ -104,15 +115,16 @@ jobs:
             BUILD_CONFIGURATION=${{ env.BUILD_CONFIGURATION }}
             GITVERSION=${{ env.SEMVER }}
             MAJOR_MINOR_PATCH=${{ env.MAJOR_MINOR_PATCH }}
-          tags: |
-            ${{ env.REGISTRY }}/${{ github.actor }}/docker-walkthrough/client:${{ env.SEMVER }}
           labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ env.tags }}
+
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v2
         with:
           subject-name: ${{ env.REGISTRY }}/${{ github.actor }}/docker-walkthrough/client
           subject-digest: ${{ steps.build_docker.outputs.digest }}
-          push-to-registry: true
+          push-to-registry: false
+          
   helm:
     runs-on: ubuntu-latest
     permissions:
@@ -134,14 +146,18 @@ jobs:
           echo "GitVersion SemVer             : $SEMVER"
           echo "GitVersion FullSemVer         : $FULL_SEMVER"
           echo "GitVersion MajorMinorPatch    : $MAJOR_MINOR_PATCH"
+
       - name: Checkout repository
         uses: actions/checkout@v4
+
       - name: Helm login
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io --username ${{ github.actor }} --password-stdin
+
       - name: Helm lint
         run: |
           helm lint ./.helm/dockerwalkthrough
+
       - name: Helm package
         run: |
           helm package ./.helm/dockerwalkthrough --version ${{ env.SEMVER }} --destination ./.helm/dockerwalkthrough
