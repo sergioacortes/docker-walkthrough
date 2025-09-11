@@ -42,7 +42,7 @@ jobs:
           echo "semver=$(echo ${{ steps.gitversion.outputs.GitVersion_SemVer }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
           echo "full_semver=$(echo ${{ steps.gitversion.outputs.GitVersion_FullSemVer }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
           echo "major_minor_patch=$(echo ${{ steps.gitversion.outputs.GitVersion_MajorMinorPatch }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
-          echo "merge=$(echo ${{ github.event_name == 'pull_request' && github.event.action == 'closed' }})" >> $GITHUB_OUTPUT
+          echo "merge=$(echo ${{ startsWith(github.ref, 'refs/heads/main') && github.event_name == 'pull_request' && github.event.action == 'closed' }})" >> $GITHUB_OUTPUT
 
       - name: Print variables
         run: |
