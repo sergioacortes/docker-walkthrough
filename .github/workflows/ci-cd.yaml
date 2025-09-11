@@ -96,72 +96,74 @@ jobs:
         id: docker_tags
         run: |
           
-          TAGS="${{ env.REGISTRY }}/${{ github.actor }}/docker-walkthrough/client:${{ env.SEMVER }}"
+          IMAGE=${{ env.REGISTRY }}/${{ github.actor }}/docker-walkthrough/client
+          TAGS="$IMAGE:${{ env.SEMVER }}"
           
-          if [[ "${{ env.MERGE }}" == "true" ]]; then
-            TAGS="$TAGS,$TAGS:latest"
+          if [[ "${{ env.MERGE }}" == "false" ]]; then
+            TAGS="$TAGS,$IMAGE:latest"
           fi
           
+          echo $TAGS
           echo "tags=$TAGS" >> $GITHUB_ENV
 
-      - name: Build and push Docker image
-        id: build_docker
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          push: true
-          file: src/DockerSampleApp/Dockerfile
-          build-args: |
-            BUILD_CONFIGURATION=${{ env.BUILD_CONFIGURATION }}
-            GITVERSION=${{ env.SEMVER }}
-            MAJOR_MINOR_PATCH=${{ env.MAJOR_MINOR_PATCH }}
-          labels: ${{ steps.meta.outputs.labels }}
-          tags: ${{ env.tags }}
-
-      - name: Generate artifact attestation
-        uses: actions/attest-build-provenance@v2
-        with:
-          subject-name: ${{ env.REGISTRY }}/${{ github.actor }}/docker-walkthrough/client
-          subject-digest: ${{ steps.build_docker.outputs.digest }}
-          push-to-registry: false
+#      - name: Build and push Docker image
+#        id: build_docker
+#        uses: docker/build-push-action@v6
+#        with:
+#          context: .
+#          push: true
+#          file: src/DockerSampleApp/Dockerfile
+#          build-args: |
+#            BUILD_CONFIGURATION=${{ env.BUILD_CONFIGURATION }}
+#            GITVERSION=${{ env.SEMVER }}
+#            MAJOR_MINOR_PATCH=${{ env.MAJOR_MINOR_PATCH }}
+#          labels: ${{ steps.meta.outputs.labels }}
+#          tags: ${{ env.tags }}
+#
+#      - name: Generate artifact attestation
+#        uses: actions/attest-build-provenance@v2
+#        with:
+#          subject-name: ${{ env.REGISTRY }}/${{ github.actor }}/docker-walkthrough/client
+#          subject-digest: ${{ steps.build_docker.outputs.digest }}
+#          push-to-registry: false
           
-  helm:
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
-      packages: write
-      attestations: write
-    needs: [ setup, docker ]
-    env:
-      BRANCH_NAME: ${{ needs.setup.outputs.BRANCH_NAME }}
-      SEMVER: ${{ needs.setup.outputs.SEMVER }}
-      FULL_SEMVER: ${{ needs.setup.outputs.FULL_SEMVER }}
-      MAJOR_MINOR_PATCH: ${{ needs.setup.outputs.MAJOR_MINOR_PATCH }}
-    steps: 
-      - name: Display GitVersion variables
-        shell: bash
-        run: |
-          echo "GitVersion BranchName         : $BRANCH_NAME"
-          echo "GitVersion SemVer             : $SEMVER"
-          echo "GitVersion FullSemVer         : $FULL_SEMVER"
-          echo "GitVersion MajorMinorPatch    : $MAJOR_MINOR_PATCH"
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Helm login
-        run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io --username ${{ github.actor }} --password-stdin
-
-      - name: Helm lint
-        run: |
-          helm lint ./.helm/dockerwalkthrough
-
-      - name: Helm package
-        run: |
-          helm package ./.helm/dockerwalkthrough --version ${{ env.SEMVER }} --destination ./.helm/dockerwalkthrough
-      
-      - name: Helm push
-        run: |
-          helm push ./.helm/dockerwalkthrough/dockerwalkthrough-${{ env.SEMVER }}.tgz oci://${{ env.REGISTRY }}/${{ github.actor }}/charts
+#  helm:
+#    runs-on: ubuntu-latest
+#    permissions:
+#      id-token: write
+#      contents: read
+#      packages: write
+#      attestations: write
+#    needs: [ setup, docker ]
+#    env:
+#      BRANCH_NAME: ${{ needs.setup.outputs.BRANCH_NAME }}
+#      SEMVER: ${{ needs.setup.outputs.SEMVER }}
+#      FULL_SEMVER: ${{ needs.setup.outputs.FULL_SEMVER }}
+#      MAJOR_MINOR_PATCH: ${{ needs.setup.outputs.MAJOR_MINOR_PATCH }}
+#    steps: 
+#      - name: Display GitVersion variables
+#        shell: bash
+#        run: |
+#          echo "GitVersion BranchName         : $BRANCH_NAME"
+#          echo "GitVersion SemVer             : $SEMVER"
+#          echo "GitVersion FullSemVer         : $FULL_SEMVER"
+#          echo "GitVersion MajorMinorPatch    : $MAJOR_MINOR_PATCH"
+#
+#      - name: Checkout repository
+#        uses: actions/checkout@v4
+#
+#      - name: Helm login
+#        run: |
+#          echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io --username ${{ github.actor }} --password-stdin
+#
+#      - name: Helm lint
+#        run: |
+#          helm lint ./.helm/dockerwalkthrough
+#
+#      - name: Helm package
+#        run: |
+#          helm package ./.helm/dockerwalkthrough --version ${{ env.SEMVER }} --destination ./.helm/dockerwalkthrough
+#      
+#      - name: Helm push
+#        run: |
+#          helm push ./.helm/dockerwalkthrough/dockerwalkthrough-${{ env.SEMVER }}.tgz oci://${{ env.REGISTRY }}/${{ github.actor }}/charts
