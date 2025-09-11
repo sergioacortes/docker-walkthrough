@@ -13,8 +13,8 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
 ARG BUILD_CONFIGURATION=Release
-ARG GITVERSION
-ARG MAJOR_MINOR_PATCH
+ARG GITVERSION=0.0.1
+ARG MAJOR_MINOR_PATCH=0.0.1
 
 COPY ["Directory.Build.props", "."]
 COPY ["src/DockerSampleApp/DockerSampleApp.csproj", "src/DockerSampleApp/"]
