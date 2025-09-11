@@ -42,33 +42,23 @@ jobs:
           echo "semver=$(echo ${{ steps.gitversion.outputs.GitVersion_SemVer }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
           echo "full_semver=$(echo ${{ steps.gitversion.outputs.GitVersion_FullSemVer }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
           echo "major_minor_patch=$(echo ${{ steps.gitversion.outputs.GitVersion_MajorMinorPatch }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+          echo "merge=$(echo ${{ github.event_name == 'pull_request' && github.event.action == 'closed' && startsWith(github.ref, 'refs/heads/main') }}) >> $GITHUB_OUTPUT
 
-      - name: Display github variables
+      - name: Create tag
+        if: ${{ steps.variables.outputs.merge }}
         run: |
           
-          ISMAIN=${{ startsWith(github.ref, 'refs/heads/main') }}
-
-          echo "github.event_name:                    ${{ github.event_name }}"
-          echo "github.event.action:                  ${{ github.event.action }}"
-          echo "github.event.pull_request.merged:     ${{ github.event.pull_request.merged }}"
-          echo "github.ref:                           ${{ github.ref }}"
-          echo "ISMAIN:                               $ISMAIN"
-
-      #- name: Create tag
-      #  if: ${{ github.event_name == 'push' && github.event.pull_request.merged == true && ( || startsWith(github.ref, 'refs/heads/release/')) }}
-      #  run: |
-      #    
-      #    git tag ${{ steps.variables.outputs.major_minor_patch }}
-      #    git push origin ${{ steps.variables.outputs.major_minor_patch }}
-      #  
-      #    $TAG=$(git ls-remote --tags origin | grep ${{ steps.variables.outputs.major_minor_patch }})
-      #  
-      #    if [ -n "$TAG" ]; then
-      #      echo "Tag created successfully: $TAG"
-      #    else
-      #      echo "Tag have not been created"
-      #      exit 1
-      #    fi
+          git tag ${{ steps.variables.outputs.major_minor_patch }}
+          git push origin ${{ steps.variables.outputs.major_minor_patch }}
+        
+          $TAG=$(git ls-remote --tags origin | grep ${{ steps.variables.outputs.major_minor_patch }})
+        
+          if [ -n "$TAG" ]; then
+            echo "Tag created successfully: $TAG"
+          else
+            echo "Tag have not been created"
+            exit 1
+          fi
 
 #  docker:
 #    runs-on: ubuntu-latest
