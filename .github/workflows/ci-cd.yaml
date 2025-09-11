@@ -102,7 +102,7 @@ jobs:
             TAGS="$TAGS:${{ env.SEMVER }},$TAGS:latest"
           fi
           
-          echo "tags=$" >> $GITHUB_ENV
+          echo "tags=$TAGS" >> $GITHUB_ENV
 
       - name: Build and push Docker image
         id: build_docker
