@@ -51,9 +51,7 @@ jobs:
           echo ${{ steps.variables.outputs.merge }}
 
       - name: Create and push tag
-        if: ${{ steps.variables.outputs.merge }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        #if: ${{ steps.variables.outputs.merge == 'true' }}
         run: |
           git tag ${{ steps.variables.outputs.major_minor_patch }}
           git push origin ${{ steps.variables.outputs.major_minor_patch }}
