@@ -67,6 +67,10 @@ jobs:
       FULL_SEMVER: ${{ needs.setup.outputs.FULL_SEMVER }}
       MAJOR_MINOR_PATCH: ${{ needs.setup.outputs.MAJOR_MINOR_PATCH }}
       MERGE: ${{ needs.setup.outputs.MERGE }}
+    strategy:
+      matrix: 
+        tags:
+          latest
     steps: 
       - name: Display GitVersion variables
         shell: bash
@@ -92,6 +96,18 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
+      - name: Calculate docker tags
+        id: docker_tags
+        run: |
+          
+          TAGS="${{ env.REGISTRY }}/${{ github.actor }}/docker-walkthrough/client"
+          
+          if [[ "${{ env.MERGE }}" == "true" ]]; then
+            TAGS="$TAGS:${{ env.SEMVER }},$TAGS:latest"
+          fi
+          
+          echo "tags=$" >> $GITHUB_ENV
+
       - name: Build and push Docker image
         id: build_docker
         uses: docker/build-push-action@v6
@@ -104,14 +120,7 @@ jobs:
             GITVERSION=${{ env.SEMVER }}
             MAJOR_MINOR_PATCH=${{ env.MAJOR_MINOR_PATCH }}
           labels: ${{ steps.meta.outputs.labels }}
-          if: ${{ env.MERGE }} == 'true'
-          tags: |
-            latest
-            ${{ env.REGISTRY }}/${{ github.actor }}/docker-walkthrough/client:${{ env.SEMVER }}
-          if: ${{ env.MERGE }} == 'false'
-          tags: |
-            ${{ env.REGISTRY }}/${{ github.actor }}/docker-walkthrough/client:${{ env.SEMVER }}
-
+          tags: ${{ steps.docker_tags.outputs.tags }}
 
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v2
