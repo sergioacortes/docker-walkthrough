@@ -99,7 +99,7 @@ jobs:
           IMAGE=${{ env.REGISTRY }}/${{ github.actor }}/docker-walkthrough/client
           TAGS="$IMAGE:${{ env.SEMVER }}"
           
-          if [[ "${{ env.MERGE }}" == "false" ]]; then
+          if [[ "${{ env.MERGE }}" == "true" ]]; then
             TAGS="$TAGS,$IMAGE:latest"
           fi
           
