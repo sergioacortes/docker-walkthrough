@@ -96,12 +96,13 @@ jobs:
         id: docker_tags
         run: |
           
-          TAGS="${{ env.REGISTRY }}/${{ github.actor }}/docker-walkthrough/client"
+          TAGS="${{ env.REGISTRY }}/${{ github.actor }}/docker-walkthrough/client:${{ env.SEMVER }}"
           
           if [[ "${{ env.MERGE }}" == "true" ]]; then
-            TAGS="$TAGS:${{ env.SEMVER }},$TAGS:latest"
+            TAGS="$TAGS,$TAGS:latest"
           fi
           
+          echo $TAGS
           echo "tags=$TAGS" >> $GITHUB_ENV
 
       - name: Build and push Docker image
