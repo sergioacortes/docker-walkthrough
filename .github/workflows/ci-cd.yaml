@@ -20,6 +20,7 @@ jobs:
       SEMVER: ${{ steps.variables.outputs.semver }}
       FULL_SEMVER: ${{ steps.variables.outputs.full_semver }}
       MAJOR_MINOR_PATCH: ${{ steps.variables.outputs.major_minor_patch }}
+      MERGE: ${{ steps.variables.outputs.merge }}
     permissions:
       contents: write
     steps:
@@ -65,6 +66,7 @@ jobs:
       SEMVER: ${{ needs.setup.outputs.SEMVER }}
       FULL_SEMVER: ${{ needs.setup.outputs.FULL_SEMVER }}
       MAJOR_MINOR_PATCH: ${{ needs.setup.outputs.MAJOR_MINOR_PATCH }}
+      MERGE: ${{ needs.setup.outputs.MERGE }}
     steps: 
       - name: Display GitVersion variables
         shell: bash
@@ -101,9 +103,15 @@ jobs:
             BUILD_CONFIGURATION=${{ env.BUILD_CONFIGURATION }}
             GITVERSION=${{ env.SEMVER }}
             MAJOR_MINOR_PATCH=${{ env.MAJOR_MINOR_PATCH }}
+          labels: ${{ steps.meta.outputs.labels }}
+          if: ${{ env.MERGE }} == 'true'
+          tags: |
+            latest
+            ${{ env.REGISTRY }}/${{ github.actor }}/docker-walkthrough/client:${{ env.SEMVER }}
+          if: ${{ env.MERGE }} == 'false'
           tags: |
             ${{ env.REGISTRY }}/${{ github.actor }}/docker-walkthrough/client:${{ env.SEMVER }}
-          labels: ${{ steps.meta.outputs.labels }}
+
 
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v2
