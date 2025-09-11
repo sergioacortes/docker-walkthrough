@@ -20,6 +20,8 @@ jobs:
       SEMVER: ${{ steps.variables.outputs.semver }}
       FULL_SEMVER: ${{ steps.variables.outputs.full_semver }}
       MAJOR_MINOR_PATCH: ${{ steps.variables.outputs.major_minor_patch }}
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -53,10 +55,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config --global user.email "github-actions@users.noreply.github.com"
-          git config --global user.name "github-actions"
           git tag ${{ steps.variables.outputs.major_minor_patch }}
           git push origin ${{ steps.variables.outputs.major_minor_patch }}
+          
         
 #  docker:
 #    runs-on: ubuntu-latest
