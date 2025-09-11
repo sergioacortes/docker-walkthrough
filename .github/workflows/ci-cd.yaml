@@ -108,10 +108,9 @@ jobs:
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v2
         with:
-          push: false
           subject-name: ${{ env.REGISTRY }}/${{ github.actor }}/docker-walkthrough/client
           subject-digest: ${{ steps.build_docker.outputs.digest }}
-          push-to-registry: true
+          push-to-registry: false
           
   helm:
     runs-on: ubuntu-latest
