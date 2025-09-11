@@ -54,21 +54,21 @@ jobs:
           echo "github.ref:                           ${{ github.ref }}"
           echo "ISMAIN:                               $ISMAIN"
 
-      - name: Create tag
-        if: ${{ github.event_name == 'push' && github.event.pull_request.merged == true && ( || startsWith(github.ref, 'refs/heads/release/')) }}
-        run: |
-          
-          git tag ${{ steps.variables.outputs.major_minor_patch }}
-          git push origin ${{ steps.variables.outputs.major_minor_patch }}
-        
-          $TAG=$(git ls-remote --tags origin | grep ${{ steps.variables.outputs.major_minor_patch }})
-        
-          if [ -n "$TAG" ]; then
-            echo "Tag created successfully: $TAG"
-          else
-            echo "Tag have not been created"
-            exit 1
-          fi
+      #- name: Create tag
+      #  if: ${{ github.event_name == 'push' && github.event.pull_request.merged == true && ( || startsWith(github.ref, 'refs/heads/release/')) }}
+      #  run: |
+      #    
+      #    git tag ${{ steps.variables.outputs.major_minor_patch }}
+      #    git push origin ${{ steps.variables.outputs.major_minor_patch }}
+      #  
+      #    $TAG=$(git ls-remote --tags origin | grep ${{ steps.variables.outputs.major_minor_patch }})
+      #  
+      #    if [ -n "$TAG" ]; then
+      #      echo "Tag created successfully: $TAG"
+      #    else
+      #      echo "Tag have not been created"
+      #      exit 1
+      #    fi
 
 #  docker:
 #    runs-on: ubuntu-latest
